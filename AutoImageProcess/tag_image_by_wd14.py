@@ -1,6 +1,8 @@
 import os
 import subprocess
 import requests
+import tkinter as tk
+from tkinter import messagebox, filedialog
 
 kohya_trainer_model_variables_data = "https://huggingface.co/DreamCloudWalker/AutoRoopModelBackup/resolve/main/kohya-trainer/model/variables/variables.data-00000-of-00001"
 blacklist = ['dress', 'solo', 'lips', 'ring', 'earrings', 'jewelry', 'skirt', 'looking_at_viewer', 'holding', 'skirt', 'pantyhose', 
@@ -37,8 +39,8 @@ def check_and_download_model(directory, model_name, model_url):
 def tag_image(image_path):
     # 设置环境变量
     os.environ['PYTHONPATH'] = '/Users/jian.deng/Github/AI/AutoImageSDXLora/AutoImageProcess/kohya-trainer'
-    wp14_model_path = "/Users/jian.deng/Github/AI/AutoImageSDXLora/AutoImageProcess/kohya-trainer/model"
-    cmd = f"python3.10 kohya-trainer/finetune/tag_images_by_wd14_tagger.py  {image_path}  --repo_id=SmilingWolf/wd-v1-4-swinv2-tagger-v2 --model_dir={wp14_model_path} --thresh=0.35 --batch_size=8 --caption_extension=.txt"
+    wd14_model_path = "/Users/jian.deng/Github/AI/AutoImageSDXLora/AutoImageProcess/kohya-trainer/model"
+    cmd = f"python3.10 kohya-trainer/finetune/tag_images_by_wd14_tagger.py  {image_path}  --repo_id=SmilingWolf/wd-v1-4-swinv2-tagger-v2 --model_dir={wd14_model_path} --thresh=0.35 --batch_size=8 --caption_extension=.txt"
     print("tag cmd:" + cmd)
     # 使用subprocess模块执行另一个Python脚本
     try:
@@ -83,6 +85,8 @@ def custom_tags(tags_path, custom_tag):
 
 if __name__=='__main__':
     check_and_download_model("kohya-trainer/model/variables", "variables.data-00000-of-00001", kohya_trainer_model_variables_data)
-    tag_image("/Users/jian.deng/AI/Lora/suyanXiezhenStarLq/bb")
-    custom_tags("/Users/jian.deng/AI/Lora/suyanXiezhenStarLq/bb", "leather")
+    folder_path = filedialog.askdirectory(title="选择包含图片和文本的文件夹")
+    if folder_path:
+        tag_image(folder_path)
+        custom_tags(folder_path, "hanfu")
         
